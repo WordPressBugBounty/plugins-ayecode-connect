@@ -603,6 +603,17 @@ class AyeCode_Connect_Turnstile {
 	 * @return void
 	 */
 	public function verify_lost_password() {
+
+		// exclusion for admin sending user a reset link manually from the backend user page.
+		if (
+			! isset( $_POST['cf-turnstile-response'] )
+			&& ! empty( $_REQUEST['action'] )
+			&& 'send-password-reset' === $_REQUEST['action']
+			&& current_user_can( 'edit_users' )
+		) {
+			return;
+		}
+
 		$verify = $this->verify_turnstile( 'lostpassword' );
 		if ( is_wp_error( $verify ) ) {
 			wp_die( $verify->get_error_message(),
@@ -704,8 +715,8 @@ class AyeCode_Connect_Turnstile {
 				case 'account':
 				case 'frontend':
 
-					// remove the WP check so we don't double-check
-					if ( 'login' === $type ) {
+					// Remove the WP login check so we don't double check.
+					if ( 'login' === $type || 'register' === $type ) {
 						remove_filter( 'authenticate', array( $this, 'verify_login' ), 99 );
 					}
 
