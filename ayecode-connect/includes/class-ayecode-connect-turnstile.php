@@ -199,7 +199,7 @@ class AyeCode_Connect_Turnstile {
 				} else if ( $pagenow && in_array( $pagenow, array(
 					'wp-login.php',
 					'wp-register.php'
-				) ) ) { // @todo test on sub domain install
+				) ) || $this->is_wps_login_page() ) { // @todo test on sub domain install
 					add_action( 'login_footer', array( $this, 'add_lazy_load_script' ) );
 					add_action( 'login_footer', array( $this, 'adjust_login_form_size_css' ) );
 				} else {
@@ -304,11 +304,11 @@ class AyeCode_Connect_Turnstile {
 
 	public function add_turnstile_uwp_mailerlite_forms( $args ) {
 		$ayecode_turnstile_options = get_option( 'ayecode_turnstile_options');
-		if ( array_key_exists('subscribe_captcha',$args) && $args['subscribe_captcha'] == 'show' && $ayecode_turnstile_options['protections']['uwp_mailerlite_subscribe'] == true ) {
+		if ( ! empty($ayecode_turnstile_options['protections']['uwp_mailerlite_subscribe']) && array_key_exists('subscribe_button_text',$args) ) {
 			$this->add_turnstile_widget();
 		}
 
-		if ( array_key_exists('unsubscribe_captcha',$args) && $args['unsubscribe_captcha'] == 'show' && $ayecode_turnstile_options['protections']['uwp_mailerlite_unsubscribe'] == true ) {
+		if ( ! empty($ayecode_turnstile_options['protections']['uwp_mailerlite_unsubscribe']) && array_key_exists('unsubscribe_button_text',$args) ) {
 			$this->add_turnstile_widget();
 		}
 	}
@@ -975,6 +975,48 @@ class AyeCode_Connect_Turnstile {
 		wp_send_json_success( $success );
 
 		wp_die();
+	}
+
+	/**
+	 * Check WPS Hide Login page.
+	 *
+	 * @since 1.4.10
+	 *
+	 * @return bool True when WPS login page, else False.
+	 */
+	public function is_wps_login_page() {
+		if ( is_login() ) {
+			return true;
+		}
+
+		if ( ! defined( 'WPS_HIDE_LOGIN_BASENAME' ) ) {
+			return false;
+		}
+
+		if ( $slug = get_option( 'whl_page' ) ) {
+			$login_slug = $slug;
+		} else if ( ( is_multisite() && is_plugin_active_for_network( WPS_HIDE_LOGIN_BASENAME ) && ( $slug = get_site_option( 'whl_page', 'login' ) ) ) ) {
+			$login_slug = $slug;
+		} else if ( ! empty( $slug ) && $slug = 'login' ) {
+			$login_slug = $slug;
+		} else {
+			return false;
+		}
+
+		$request_uri = ! empty( $_SERVER['REQUEST_URI'] ) ? rawurldecode( $_SERVER['REQUEST_URI'] ) : '';
+
+		if ( $request_uri && strpos( $request_uri, $login_slug ) !== false ) {
+			$current_parse_url = parse_url( $request_uri );
+			$login_parse_url = parse_url( site_url( $login_slug, 'relative' ) );
+			$current_path = ! empty( $current_parse_url['path'] ) ? trim( $current_parse_url['path'], "/" ) : '';
+			$login_path = ! empty( $login_parse_url['path'] ) ? trim( $login_parse_url['path'], "/" ) : '';
+
+			if ( $current_path && $current_path == $login_path ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
