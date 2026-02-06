@@ -6,8 +6,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Tags:  ayecode, service, geodirectory, userswp, getpaid
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.8
-Stable tag: 1.4.12
+Tested up to: 6.9
+Stable tag: 1.4.15
 
 
 Use this service plugin to easily activate any of our products, open a support ticket and view documentation all from your wp-admin!
@@ -80,6 +80,16 @@ If your host runs "mod security" on your hosting and has some specific additiona
 3. Connected.
 
 == Changelog ==
+
+= 1.4.15 - 2026-01-22 =
+* Merge AUI 0.2.43, SD 1.2.31 & AyeCode Connect Helper 1.0.5 - CHANGED
+
+= 1.4.14 - 2025-12-04 =
+* Remove unused plugin array elements from API calls to prevent issues with servers with low max_input_vars - FIXED
+
+= 1.4.13 - 2025-10-16 =
+* Turnstile captcha support for UWP Active Campaign addon forms - ADDED
+* Turnstile captcha support for UWP Brevo addon forms - ADDED
 
 = 1.4.12 - 2025-09-29 =
 * Disable turnstile captcha on GetPaid Checkout Form is not working - FIXED
