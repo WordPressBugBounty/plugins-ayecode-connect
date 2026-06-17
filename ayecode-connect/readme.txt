@@ -7,7 +7,7 @@ Tags:  ayecode, service, geodirectory, userswp, getpaid
 Requires at least: 6.0
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 1.4.16
+Stable tag: 1.4.17
 
 
 Use this service plugin to easily activate any of our products, open a support ticket and view documentation all from your wp-admin!
@@ -80,6 +80,9 @@ If your host runs "mod security" on your hosting and has some specific additiona
 3. Connected.
 
 == Changelog ==
+
+= 1.4.17 - 2026-06-17 =
+* Turnstile captcha support for UWP Getresponse, Aweber, Constant Contact, Newsletter, Active Campaign, and Campaign Monitor addon forms - ADDED
 
 = 1.4.16 - 2026-04-02 =
 * WordPress 7.0 compatibility - COMPATIBILITY
